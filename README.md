@@ -1,0 +1,1 @@
+Sample target service: fastapi-hr-service — a FastAPI-based HR service used to demonstrate end-to-end API automation
