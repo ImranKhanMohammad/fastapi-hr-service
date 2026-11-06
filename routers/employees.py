@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from models.employee import Employee
+from models.employee import Employee, EmployeeCreate
 from store.Data import employees
 
 router = APIRouter(prefix="/employees", tags=["Employees"])
@@ -19,12 +19,14 @@ def get_employee(emp_id: int):
 
 
 @router.post("/")
-def create_employee(emp: Employee):
+def create_employee(emp: EmployeeCreate):
+    new_id = max((e.id for e in employees), default=0) + 1
+    new_emp = Employee(id=new_id, **emp.model_dump())
     for e in employees:
-        if e.id == emp.id:
+        if e.name == new_emp.name:
             raise HTTPException(status_code=400, detail="Employee already exists")
-    employees.append(emp)
-    return {"message": "Employee created", "employee": emp}
+    employees.append(new_emp)
+    return {"message": "Employee created", "employee": new_emp}
 
 
 @router.put("/{emp_id}")
